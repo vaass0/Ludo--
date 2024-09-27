@@ -1,9 +1,7 @@
 import random 
-import tkinter as tk
 
 class Ficha:
-    def __init__(self, posicion, color):
-        self.color = color
+    def __init__(self, posicion):
         self.posicion = posicion
     def get_posicion(self):
         return self.posicion
@@ -13,6 +11,8 @@ class Ficha:
         posicion = self.get_posicion()
         if posicion != 40 and posicion != 0:
             self.set_posicion(posicion+pasos)
+        elif posicion == 0:
+             self.set_posicion(1)
     def resetFicha(self):
         self.set_posicion(0)
 
@@ -22,7 +22,7 @@ class Jugador:
         self.fichas =  fichas
     def agregar_ficha(self):
         for i in range(4):
-            self.fichas.append(Ficha(0,self.color))
+            self.fichas.append(Ficha(0))
     def mostrar_fichas(self):
         for i in self.fichas:
             if i.posicion == 0:
@@ -33,58 +33,67 @@ class Jugador:
                 print("Ficha ", self.fichas.index(i) + 1 , "en la meta")
     def seleccionaFicha(self,dado):
         self.mostrar_fichas()
-        ficha = int(input("Indique el numero de la ficha a seleccionar: "))
-        if ficha>4 or ficha<1:
-            print("la ficha seleccionada no existe, seleccionar un numero del 1 al 4...")
-            self.seleccionarFicha(dado)
-        if dado != 6 and self.fichas(ficha-1).posicion == 0:
-            print("la ficha seleccionada no es jugable, seleccione otra por favor...")
-            self.seleccionarFicha(dado)
-        return ficha
-
+        while(True):
+            ficha = int(input("Indique el numero de la ficha a seleccionar: "))
+            if ficha>4 or ficha<1:
+                print("la ficha seleccionada no existe, seleccionar un numero del 1 al 4...")
+            elif dado != 6 and self.fichas(ficha-1).posicion == 0:
+                print("la ficha seleccionada no es jugable, seleccione otra por favor...")
+            else:
+                break
+        return   ficha
+    def fichas_en_juego(self):
+        for i in self.fichas:
+            if(i.posicion != 0 ):
+                return True
+        return False
+    def win(self):
+        for ficha in self.fichas:
+            if ficha.posicion != 40:
+                return False
+        return True
 class Tablero:
-    def __init__(self,jugadores,casillas):
-       self.casillas = casillas
+    def __init__(self,jugadores):
        self.jugadores = jugadores
     def agregar_jugador(self,cantidad):
         for i in range(cantidad):
-            color = str(input("Elija un color entre Rojo/Amarillo/Azul/Verde: "))
-            if color == "Rojo" or "rojo" or "Azul" or "azul" or "Amarillo" or "amarillo" or "Verde" or "verde":
-                for i in self.jugadores:
-                    if i.color == color:
-                        print("El color seleccionado esta ocupado, intente con otro...")
-                        self.agregar_jugador(cantidad)
-                player = Jugador(color,[])
-                player.agregar_ficha()
-                self.jugadores.append(player)
-            else:
-                print("Ingrese un color valido...")
-                self.agregar_jugador(cantidad)
+            while(True):
+                self.mostrar_jugadores()
+                color = input("Elija un color entre Rojo/Amarillo/Azul/Verde: ").lower()
+                if color == "rojo" or color == "azul" or color == "amarillo" or color == "verde":
+                     for  i in self.jugadores:
+                        if i.color == color:
+                            print("El color seleccionado esta ocupado, intente con otro...")
+                            break
+                     else:
+                        player = Jugador(color,[])
+                        player.agregar_ficha()
+                        self.jugadores.append(player)
+                        break
+                else:
+                    print("Ingrese un color valido...")
     def mostrar_jugadores(self):
         for i in self.jugadores:
             print(i.color)
             i.mostrar_fichas()
             
-    def lanzar_dado():
+    def lanzar_dado(self):
         return random.randint(1,6)
-    def turno_jugador(self):
-         self.lanzar_dado()
-     
+    def turno(self):
+        for jugador in self.jugadores:
+            if(jugador.win()):
+                pass
+            dado = self.lanzar_dado()
+            print("El numero del dado es: ",dado)
+            if(jugador.fichas_en_juego() or dado == 6):
+                ficha = jugador.seleccionar_ficha(dado)
+                ficha.mover(dado)
+            else:
+                print("No puedes mover fichas...💀")
+
+
 tablero = Tablero([])
-tablero.agregar_jugador(3)
+tablero.agregar_jugador(1)
 tablero.mostrar_jugadores()
+tablero.turno()
 
-faker = Jugador("Rojo",[])
-faker.mostrar_fichas()
-faker.agregar_ficha()
-faker.mostrar_fichas()
-
-            
-ficha = Ficha(0,"Azul")
-print(ficha.get_posicion())
-print(ficha.color)
-
-ficha.moverFicha(6)
-print(ficha.posicion)
-ficha.resetFicha()
-print(ficha.posicion)
