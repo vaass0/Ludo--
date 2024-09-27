@@ -9,8 +9,10 @@ class Ficha:
         self.posicion = posicion
     def mover_ficha(self, pasos):
         posicion = self.get_posicion()
-        if posicion != 40 and posicion != 0:
+        if posicion + pasos <= 40 and posicion != 0:
             self.set_posicion(posicion+pasos)
+        elif posicion + pasos > 40:
+            self.set_posicion(40-(posicion+pasos-40))
         elif posicion == 0:
              self.set_posicion(1)
     def reset_ficha(self):
@@ -27,9 +29,9 @@ class Jugador:
         for i in self.fichas:
             if i.posicion == 0:
                 print("Ficha ", self.fichas.index(i) + 1 ,"en spawn")
-            elif i<40:
+            elif i.posicion<40:
                 print("Ficha ", self.fichas.index(i) + 1 ,"en juego en la posicion:",i.posicion)
-            elif i == 40:
+            elif i.posicion == 40:
                 print("Ficha ", self.fichas.index(i) + 1 , "en la meta")
     def seleccionar_ficha(self,dado):
         self.mostrar_fichas()
@@ -37,14 +39,14 @@ class Jugador:
             ficha = int(input("Indique el numero de la ficha a seleccionar: "))
             if ficha>4 or ficha<1:
                 print("la ficha seleccionada no existe, seleccionar un numero del 1 al 4...")
-            elif dado != 6 and self.fichas(ficha-1).posicion == 0:
+            elif dado != 6 and self.fichas[ficha-1].posicion == 0 or self.fichas[ficha-1].posicion == 40:
                 print("la ficha seleccionada no es jugable, seleccione otra por favor...")
             else:
                 break
         return self.fichas[ficha-1]
     def fichas_en_juego(self):
         for i in self.fichas:
-            if(i.posicion != 0 ):
+            if(i.posicion != 0 and i.posicion != 40):
                 return True
         return False
     def win(self):
@@ -83,11 +85,12 @@ class Tablero:
         for jugador in self.jugadores:
             if(jugador.win()):
                 pass
-            dado = 6
+            dado = self.lanzar_dado()
             print("El numero del dado es: ",dado)
             if(jugador.fichas_en_juego() or dado == 6):
                 ficha = jugador.seleccionar_ficha(dado)
                 ficha.mover_ficha(dado)
+                jugador.mostrar_fichas()
             else:
                 print("No puedes mover fichas...💀")
 
@@ -95,5 +98,6 @@ class Tablero:
 tablero = Tablero([])
 tablero.agregar_jugador(1)
 tablero.mostrar_jugadores()
-tablero.turno()
+while(True):
+    tablero.turno()
 
