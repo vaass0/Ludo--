@@ -31,7 +31,7 @@ class Jugador:
                 print("Ficha ", self.fichas.index(i) + 1 ,"en juego en la posicion:",i.posicion)
             elif i == 40:
                 print("Ficha ", self.fichas.index(i) + 1 , "en la meta")
-    def seleccionaFicha(self,dado):
+    def selecciona_ficha(self,dado):
         self.mostrar_fichas()
         while(True):
             ficha = int(input("Indique el numero de la ficha a seleccionar: "))
