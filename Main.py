@@ -7,13 +7,13 @@ class Ficha:
         return self.posicion
     def set_posicion(self,posicion):
         self.posicion = posicion
-    def moverFicha(self, pasos):
+    def mover_ficha(self, pasos):
         posicion = self.get_posicion()
         if posicion != 40 and posicion != 0:
             self.set_posicion(posicion+pasos)
         elif posicion == 0:
              self.set_posicion(1)
-    def resetFicha(self):
+    def reset_ficha(self):
         self.set_posicion(0)
 
 class Jugador:
@@ -41,7 +41,7 @@ class Jugador:
                 print("la ficha seleccionada no es jugable, seleccione otra por favor...")
             else:
                 break
-        return   ficha
+        return self.fichas[ficha-1]
     def fichas_en_juego(self):
         for i in self.fichas:
             if(i.posicion != 0 ):
@@ -83,11 +83,11 @@ class Tablero:
         for jugador in self.jugadores:
             if(jugador.win()):
                 pass
-            dado = self.lanzar_dado()
+            dado = 6
             print("El numero del dado es: ",dado)
             if(jugador.fichas_en_juego() or dado == 6):
                 ficha = jugador.seleccionar_ficha(dado)
-                ficha.mover(dado)
+                ficha.mover_ficha(dado)
             else:
                 print("No puedes mover fichas...💀")
 
