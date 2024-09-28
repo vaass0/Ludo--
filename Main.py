@@ -17,10 +17,10 @@ class Ficha:
         elif posicion + pasos > numCasillas:
             self.set_posicion(numCasillas-(posicion+pasos-numCasillas))
         elif posicion == -1:
-             self.set_posicion(0)
+             self.set_posicion(-1)
 
     def reset_ficha(self):
-        self.set_posicion(0)
+        self.set_posicion(-1)
 
 class Jugador:
     def __init__(self,color,fichas,numCasillas) :
