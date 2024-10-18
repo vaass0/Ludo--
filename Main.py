@@ -119,6 +119,7 @@ class Tablero:
             if(jugador.fichas_en_juego() or dado == 6):
                 ficha = jugador.seleccionar_ficha(dado)
                 ficha.mover_ficha(dado,numCasillas)
+                self.comer_ficha(jugador,ficha)
                 jugador.mostrar_fichas()
             else:
                 print("No puedes mover fichas...💀")
@@ -138,11 +139,25 @@ class Tablero:
                 posRel.append(pos - self.casillasBlancas)
             else:
                 posRel.append(pos)
-
         return posRel
 
+    def comer_ficha(self,jugador,ficha):
+        jugadores = []
+        jugadores.extend(self.jugadores)
+        jugadores.remove(jugador)
+
+        indice_ficha = jugador.fichas.index(ficha)
+        ficha_pos = self.posicion_relativa_al_indice(jugador)[indice_ficha]
+        for jug in jugadores:
+            fichas = self.posicion_relativa_al_indice(jug)
+            for comida in fichas:
+                if comida == ficha_pos:
+                    a = fichas.index(comida)
+                    jug.fichas[a].reset_ficha()
+        
+
 tablero = Tablero([],40,6)
-tablero.agregar_jugador(4)
+tablero.agregar_jugador(2)
 tablero.mostrar_jugadores()
 while(True):
     for i in tablero.jugadores:
