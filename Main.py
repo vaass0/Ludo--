@@ -17,7 +17,7 @@ class Ficha:
         elif posicion + pasos > numCasillas:
             self.set_posicion(numCasillas-(posicion+pasos-numCasillas))
         elif posicion == -1:
-             self.set_posicion(-1)
+             self.set_posicion(1)
 
     def reset_ficha(self):
         self.set_posicion(-1)
@@ -110,6 +110,7 @@ class Tablero:
     def turno(self):
         numCasillas = self.num_de_casillas()
         for jugador in self.jugadores:
+            print("~~~~~~~~~~~~~~~~~~~~~~~")
             print("Turno de",jugador.color)
             if(jugador.win(numCasillas)):
                 pass
@@ -123,7 +124,7 @@ class Tablero:
                 print("No puedes mover fichas...💀")
 
     def posicion_relativa_al_indice(self,jugador):  #Retorna las posiciones relativas respecto al primer jugador
-        distJug = int(self.casillasBlancas / 4)          #Distancia en casillas, que hay entre cada jugador 
+        distJug = int(self.casillasBlancas / 4)     #Distancia en casillas, que hay entre cada jugador 
         indice = self.jugadores.index(jugador)      #Numero que representa la distancia con el origen, el origen esta en el primer jugador
         posFichJug= jugador.posiciones_fichas()     #Posiciones de las fichas del jugador al que se analiza
         posRel = []                                 #Posiciones relativas al origen
