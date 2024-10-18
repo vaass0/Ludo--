@@ -17,7 +17,7 @@ class Ficha:
         elif posicion + pasos > numCasillas:
             self.set_posicion(numCasillas-(posicion+pasos-numCasillas))
         elif posicion == -1:
-             self.set_posicion(-1)
+             self.set_posicion(1)
 
     def reset_ficha(self):
         self.set_posicion(-1)
@@ -110,6 +110,7 @@ class Tablero:
     def turno(self):
         numCasillas = self.num_de_casillas()
         for jugador in self.jugadores:
+            print("~~~~~~~~~~~~~~~~~~~~~~~")
             print("Turno de",jugador.color)
             if(jugador.win(numCasillas)):
                 pass
@@ -118,12 +119,13 @@ class Tablero:
             if(jugador.fichas_en_juego() or dado == 6):
                 ficha = jugador.seleccionar_ficha(dado)
                 ficha.mover_ficha(dado,numCasillas)
+                self.comer_ficha(jugador,ficha)
                 jugador.mostrar_fichas()
             else:
                 print("No puedes mover fichas...💀")
 
     def posicion_relativa_al_indice(self,jugador):  #Retorna las posiciones relativas respecto al primer jugador
-        distJug = int(self.casillasBlancas / 4)          #Distancia en casillas, que hay entre cada jugador 
+        distJug = int(self.casillasBlancas / 4)     #Distancia en casillas, que hay entre cada jugador 
         indice = self.jugadores.index(jugador)      #Numero que representa la distancia con el origen, el origen esta en el primer jugador
         posFichJug= jugador.posiciones_fichas()     #Posiciones de las fichas del jugador al que se analiza
         posRel = []                                 #Posiciones relativas al origen
@@ -137,11 +139,25 @@ class Tablero:
                 posRel.append(pos - self.casillasBlancas)
             else:
                 posRel.append(pos)
-
         return posRel
 
+    def comer_ficha(self,jugador,ficha):
+        jugadores = []
+        jugadores.extend(self.jugadores)
+        jugadores.remove(jugador)
+
+        indice_ficha = jugador.fichas.index(ficha)
+        ficha_pos = self.posicion_relativa_al_indice(jugador)[indice_ficha]
+        for jug in jugadores:
+            fichas = self.posicion_relativa_al_indice(jug)
+            for comida in fichas:
+                if comida == ficha_pos:
+                    a = fichas.index(comida)
+                    jug.fichas[a].reset_ficha()
+        
+
 tablero = Tablero([],40,6)
-tablero.agregar_jugador(4)
+tablero.agregar_jugador(2)
 tablero.mostrar_jugadores()
 while(True):
     for i in tablero.jugadores:
